@@ -59,6 +59,14 @@ class ViewController: UIViewController {
         miMapa.setRegion(region, animated: true)
         miMapa.showsUserLocation = true
         
+        let alert = UIAlertController(title: "Esta es tu Ubicacion En tiempo Real", message: "Lat: \(miUbicacion?.coordinate.latitude ?? 0) - Long: \(miUbicacion?.coordinate.longitude ?? 0) - Altitud: \(String(format: "%0.2f", miUbicacion?.altitude ?? 0)) m", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+        
+        alert.addAction(action)
+        
+        present(alert, animated: true, completion: nil)
+        
     }
 
 }
@@ -174,12 +182,12 @@ extension ViewController: MKMapViewDelegate {
             /// Agregar Anotation Punto Medio
             let routeAnnotation = MKPointAnnotation()
             
-            let middlePoint = ruta.polyline.points()[ruta.polyline.pointCount].coordinate
+            let middlePoint = ruta.polyline.points()[ruta.polyline.pointCount/2].coordinate
             
             
             routeAnnotation.coordinate = middlePoint
             routeAnnotation.title = "Distancia"
-            routeAnnotation.subtitle = "\(ruta.distance) m"
+            routeAnnotation.subtitle = "\(ruta.distance/1000) KM"
             
             
             self.miMapa.addAnnotation(routeAnnotation)
@@ -206,18 +214,23 @@ extension ViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        if annotation.title == "YO"
+        if annotation.title == "Distancia"
         {
-            return nil
+            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
+                
+            view.pinTintColor = UIColor.red
+            view.animatesDrop = true
+            view.canShowCallout = true
+            
+            
+            view.isSelected = true
+            
+            
+            return view;
         }
         else
         {
-            let view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: nil)
-            
-            view.
-                view.animatesDrop = true
-                view.canShowCallout = true
-                return view;
+            return nil
         }
     }
 }
